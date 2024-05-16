@@ -81,6 +81,6 @@ const Emoji = ({
 	onClick: () => void;
 }) => (
 	<div className="cursor-pointer" onClick={onClick}>
-		<Image src={src} width={70} height={70} alt={alt} />
+		<Image src={src} width={70} height={70} alt={alt} unoptimized />
 	</div>
 );

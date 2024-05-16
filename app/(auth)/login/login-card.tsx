@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { authAction } from "@/lib/action";
 
 export default function LoginCard() {
 	return (
 		<>
-			<form className="space-y-4">
+			<form action={authAction} className="space-y-4">
 				<LoginButton />
 			</form>
 			<div className="mt-4 text-center text-[13px]">

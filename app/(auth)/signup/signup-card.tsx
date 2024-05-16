@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { authAction } from "@/lib/action";
 
 export default function SignupCard() {
 	return (
 		<>
-			<form className="space-y-4">
+			<form action={authAction} className="space-y-4">
 				<SignUpButton />
 			</form>
 			<div className="mt-4 text-center text-[13px]">

@@ -1,18 +1,28 @@
+import { IUserDocument } from "@/models/userModel";
 import { Avatar, AvatarImage } from "../ui/avatar";
 
-const UserCard = () => {
+type UserCardProps = {
+	user: IUserDocument;
+	selectedUser: IUserDocument | null;
+	handleSelectedUser: (user: IUserDocument) => void;
+};
+
+const UserCard = ({
+	user,
+	selectedUser,
+	handleSelectedUser,
+}: UserCardProps) => {
+	const isSelected = user._id === selectedUser?._id;
+	const bg = isSelected ? "bg-sigBackgroundFeedHover" : "";
 	return (
 		<div
-			className={`flex items-center gap-2 border-b border-b-sigColorBgBorder p-1 hover:bg-sigBackgroundFeedHover cursor-pointer `}
+			onClick={() => handleSelectedUser(user)}
+			className={`flex items-center gap-2 border-b ${bg} border-b-sigColorBgBorder p-1 hover:bg-sigBackgroundFeedHover cursor-pointer `}
 		>
 			<Avatar className="cursor-pointer hover:bg-sigBackgroundSecondaryHover">
-				<AvatarImage
-					src={
-						"https://questhowth.ie/wp-content/uploads/2018/04/user-placeholder.png"
-					}
-				/>
+				<AvatarImage src={user.avatar} />
 			</Avatar>
-			<span>John Doe</span>
+			<span>{user.fullName}</span>
 		</div>
 	);
 };

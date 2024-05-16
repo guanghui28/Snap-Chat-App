@@ -3,7 +3,9 @@ import { IMessageDocument } from "@/models/messageModel";
 import { PopulatedDoc } from "mongoose";
 import { Session } from "next-auth";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Dialog } from "../ui/dialog";
+import { DialogContent } from "@radix-ui/react-dialog";
 
 type ChatMessagesProps = {
 	messages: IMessageDocument[] | PopulatedDoc<IMessageDocument>[];
@@ -12,6 +14,14 @@ type ChatMessagesProps = {
 
 const ChatMessages = ({ messages, session }: ChatMessagesProps) => {
 	const lastMsgRef = useRef<HTMLDivElement>(null);
+	const [isPreviewingImage, setIsPreviewingImage] = useState({
+		open: false,
+		imgUrl: "",
+	});
+
+	useEffect(() => {
+		lastMsgRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [messages]);
 
 	return (
 		<>
@@ -21,6 +31,9 @@ const ChatMessages = ({ messages, session }: ChatMessagesProps) => {
 				const isMessageImage = message.messageType === "image";
 				const isPrevMessageFromSameSender =
 					idx > 0 && messages[idx - 1].sender._id === message.sender._id;
+				const handleImageLoad = () => {
+					lastMsgRef.current?.scrollIntoView({ behavior: "smooth" });
+				};
 
 				return (
 					<div key={message._id} className="w-full" ref={lastMsgRef}>
@@ -47,6 +60,13 @@ const ChatMessages = ({ messages, session }: ChatMessagesProps) => {
 											height={200}
 											className="h-auto w-auto object-cover cursor-pointer"
 											alt="Image"
+											onClick={() =>
+												setIsPreviewingImage({
+													open: true,
+													imgUrl: message.content,
+												})
+											}
+											onLoad={handleImageLoad}
 										/>
 									</div>
 								) : (
@@ -57,6 +77,23 @@ const ChatMessages = ({ messages, session }: ChatMessagesProps) => {
 					</div>
 				);
 			})}
+
+			<Dialog
+				open={isPreviewingImage.open}
+				onOpenChange={() => setIsPreviewingImage({ open: false, imgUrl: "" })}
+			>
+				<DialogContent
+					className="max-w-4xl h-3/4 bg-sigMain border border-sigColorBgBorder outline-none"
+					autoFocus={false}
+				>
+					<Image
+						src={isPreviewingImage.imgUrl}
+						fill
+						className="object-contain p-2"
+						alt="image"
+					/>
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 };
